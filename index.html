@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font-size:14px}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Hablemos de la PTAR</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: una columna tipo "acta de reunión": rol y contexto, escena con diálogos, decisión y retroalimentación */
+:root{
+  --bg:#F3F4F5; --surface:#FFFFFF; --ink:#2E3236; --muted:#62676C;
+  --accent:#3F8E24; --accent-soft:#EAF3E3; --scene:#E9EBED;
+  --ok:#1C7A4A; --ok-soft:#DDF2E6; --bad:#A3311F; --bad-soft:#F7E0DA; --line:#D3D6D9;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#16181A; --surface:#202326; --ink:#ECEEF0; --muted:#A0A6AC;
+  --accent:#7DCB5A; --accent-soft:#1F3318; --scene:#1B1D20;
+  --ok:#5FCF94; --ok-soft:#173527; --bad:#FF8A7D; --bad-soft:#3A1E1C; --line:#30343A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16181A; --surface:#202326; --ink:#ECEEF0; --muted:#A0A6AC;
+  --accent:#7DCB5A; --accent-soft:#1F3318; --scene:#1B1D20;
+  --ok:#5FCF94; --ok-soft:#173527; --bad:#FF8A7D; --bad-soft:#3A1E1C; --line:#30343A; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,6vw,40px);font-weight:800}
+h2{font-size:22px;font-weight:600}
+p{margin:0}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.progress{display:flex;gap:6px}
+.progress span{width:28px;height:6px;border-radius:3px;background:var(--line)}
+.progress span.done{background:var(--accent)}
+.progress span.now{background:var(--muted)}
+.score{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
+.context{display:flex;flex-direction:column;gap:6px}
+.role{display:inline-block;align-self:flex-start;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:13px;padding:3px 10px;border-radius:999px}
+.scene{background:var(--scene);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.scene .label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.line{display:flex;gap:10px;align-items:flex-start}
+.who{flex:none;font-weight:700;font-size:13px;color:var(--accent);min-width:92px}
+.say{font-size:15px;min-width:0}
+.note{font-size:14px;color:var(--muted);font-style:italic}
+.question{font-weight:700;font-size:18px}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{font:inherit;text-align:left;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;display:flex;gap:12px;align-items:flex-start}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.opt .k{font-family:var(--display);font-weight:800;color:var(--accent);flex:none;width:18px}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt.dim{opacity:.55}
+.feedback{border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.feedback.ok{background:var(--ok-soft);border:1px solid var(--ok)}
+.feedback.bad{background:var(--bad-soft);border:1px solid var(--bad)}
+.feedback .verdict{font-weight:700}
+.feedback.ok .verdict{color:var(--ok)}
+.feedback.bad .verdict{color:var(--bad)}
+.tag{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.btn{font:inherit;font-weight:700;background:var(--accent);color:var(--surface);border:0;border-radius:10px;padding:12px 20px;cursor:pointer;align-self:flex-start}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.rules{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.big{font-family:var(--display);font-size:48px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1}
+.intro-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+footer{font-size:13px;color:var(--muted)}
+@media (max-width:480px){.line{flex-direction:column;gap:2px}.who{min-width:0}}
+@media (prefers-reduced-motion:no-preference){.fade{animation:f .25s ease-out}@keyframes f{from{transform:translateY(4px)}to{transform:none}}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+const scenes=[
+{role:"Eres el vocero del proyecto",
+ context:"Sábado en la tarde, caseta comunal del barrio Camilo Torres. Unas 120 personas vinieron a escuchar sobre el reinicio de los estudios de la PTAR. Muchas recuerdan que en 2015 se opusieron a la planta.",
+ lines:[{who:"Tu diapositiva 1 de 40",say:"\"Tratamiento secundario con desinfección y manejo de lodos. Caudal medio: 1,7 m³/s.\""}],
+ note:"Hay personas de pie afuera por falta de espacio.",
+ q:"¿Cómo abres la reunión?",
+ opts:[
+  {t:"Presentar las 40 diapositivas técnicas completas y dejar las preguntas para el final",ok:false,tema:"Barrera semántica y administrativa",fb:"La comunidad no vino a escuchar caudales: vino a saber si la planta la va a afectar. Una presentación larga y técnica, sin diálogo, aumenta la sensación de que la decisión ya está tomada."},
+  {t:"Reconocer la historia: \"Sabemos que este proyecto lleva muchos años y que ustedes tienen preocupaciones. Queremos escucharlas primero\". Luego preguntar qué les preocupa",ok:true,tema:"Manejo del público",fb:"Muy bien. Antes de dar datos, reconoces la desconfianza y escuchas. Así la comunidad siente que su opinión cuenta y está más dispuesta a escuchar la información técnica después."},
+  {t:"Empezar diciendo que la planta es obligatoria por orden judicial y que el lote ya está definido",ok:false,tema:"Nivel de relación",fb:"Aunque sea cierto, empezar así comunica imposición. La comunidad lo escucha como \"su opinión no importa\" y el diálogo se cierra antes de empezar."}]},
+{role:"Dilema: eres el vocero del proyecto",
+ context:"Una vecina se levanta y hace la pregunta que todos tienen en la cabeza.",
+ lines:[{who:"Vecina",say:"\"Ingeniero, lo único que queremos saber es si esa planta va a oler. Aquí vivimos con nuestros hijos.\""}],
+ note:"La sala queda en silencio esperando tu respuesta.",
+ q:"¿Qué respondes?",
+ opts:[
+  {t:"\"No, señora, no va a oler nada, se lo garantizo\"",ok:false,tema:"Barrera psicológica: credibilidad",fb:"Una promesa absoluta frente a una comunidad desconfiada resta credibilidad. Ellos saben que nada es 100 % seguro, y escuchan otra promesa más de las muchas que ya han oído."},
+  {t:"\"Se implementará un sistema de control de sulfuro de hidrógeno mediante biofiltración y cubrimiento de unidades\"",ok:false,tema:"Barrera semántica",fb:"La respuesta puede ser técnicamente correcta, pero la vecina no sabe qué es el sulfuro de hidrógeno ni la biofiltración. No le respondiste la pregunta."},
+  {t:"\"Es una pregunta justa. Una planta mal operada sí puede oler. Por eso el diseño debe cubrir los tanques y filtrar el aire, y nos comprometemos a medir los olores y mostrarles los resultados\"",ok:true,tema:"Lenguaje claro y honestidad",fb:"Excelente. Respondes la pregunta real, con palabras cotidianas y sin prometer lo imposible. La honestidad sobre el riesgo genera más confianza que una garantía que nadie cree."}]},
+{role:"Eres el vocero del proyecto",
+ context:"Hace mucho calor y el parlante tiene interferencia. La gente de atrás y la que está afuera no escucha bien.",
+ lines:[{who:"Vecino desde afuera",say:"\"¡Hable duro que no se oye nada!\""}],
+ note:"El parlante chilla cada vez que subes el volumen.",
+ q:"¿Qué haces?",
+ opts:[
+  {t:"Subir el volumen del parlante al máximo y seguir hablando",ok:false,tema:"Barrera física",fb:"Con interferencia, más volumen solo produce más ruido. El público se incomoda y entiende menos."},
+  {t:"Hacer una pausa, apagar el parlante, pedir que la gente se acerque en semicírculo y hablar despacio, de frente y vocalizando",ok:true,tema:"Manejo de la voz",fb:"Correcto. Eliminas el ruido del canal y ajustas tu voz: ritmo pausado, buena vocalización y contacto visual. Además, acercarte al público reduce la distancia, también la simbólica."},
+  {t:"Seguir igual; la presentación quedará publicada en la página de la empresa",ok:false,tema:"Barrera física y de acceso",fb:"Muchos vecinos no van a consultar una página web. Si no escucharon la reunión, para ellos la información no existe y los rumores la reemplazan."}]},
+{role:"Reto: identifica el vicio",
+ context:"Escucha esta parte de la intervención del ingeniero.",
+ lines:[{who:"Ingeniero",say:"\"Básicamente, en ese orden de ideas, digamos que básicamente la planta, digamos, va a tener sus medidas pertinentes.\""}],
+ note:"Algunos vecinos se miran y se ríen.",
+ q:"¿Qué vicio del lenguaje predomina en esta frase?",
+ opts:[
+  {t:"Muletillas",ok:true,tema:"Vicios del lenguaje: muletillas",fb:"Exacto. \"Básicamente\", \"en ese orden de ideas\" y \"digamos\" son muletillas: llenan espacio sin aportar información. Frente a un público desconfiado, además suenan a evasión."},
+  {t:"Barbarismo",ok:false,tema:"Vicios del lenguaje",fb:"El barbarismo es decir o escribir mal una palabra, como \"haiga\". Aquí las palabras están bien dichas; el problema es que sobran."},
+  {t:"Arcaísmo",ok:false,tema:"Vicios del lenguaje",fb:"El arcaísmo es usar palabras antiguas que ya no se usan, como \"asaz\". Aquí son palabras actuales usadas como relleno."}]},
+{role:"Eres la gestora social del proyecto",
+ context:"La reunión está por terminar. La comunidad sigue sin aceptar la planta. El líder de la Junta de Acción Comunal toma la palabra.",
+ lines:[{who:"Líder comunal",say:"\"Eso mismo nos dijeron hace diez años. ¿Qué garantía tenemos de que esta vez sí nos van a tener en cuenta?\""}],
+ note:"Todos esperan tu respuesta.",
+ q:"¿Cómo cierras la reunión?",
+ opts:[
+  {t:"\"Las decisiones de este tipo no dependen de nosotros, se toman a nivel nacional\"",ok:false,tema:"Nivel de relación",fb:"Aunque haya decisiones que no dependan de la empresa, esta respuesta transmite que nadie se hace responsable. La comunidad sale convencida de que no la tendrán en cuenta."},
+  {t:"\"Les vamos a enviar toda la información por WhatsApp\"",ok:false,tema:"Barrera administrativa",fb:"Enviar información no responde a la pregunta del líder, que pidió garantías. Sin compromisos concretos, la desconfianza sigue igual."},
+  {t:"Proponer tres compromisos con fecha: una mesa de trabajo con la Junta de Acción Comunal, una visita a una planta en funcionamiento y un acta firmada hoy con lo acordado",ok:true,tema:"Manejo del público",fb:"Muy bien. Ante la desconfianza, los compromisos verificables valen más que las palabras. Quizás la comunidad no acepte la planta hoy, pero el diálogo sigue abierto y la confianza puede empezar a construirse."}]}
+];
+
+let i=-1, score=0, answered=false;
+const app=document.getElementById("app");
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function intro(){
+  app.innerHTML=`<header class="context fade">
+    <p class="eyebrow">Simulador de situaciones comunicativas</p>
+    <h1>Hablemos de la PTAR</h1>
+    <p>Neiva no tiene planta de tratamiento de aguas residuales y vierte cerca de 1.500 litros por segundo al río Magdalena. El lote para la planta está frente al barrio Camilo Torres, donde los vecinos temen los malos olores. Hoy hay reunión con la comunidad y tú eres el vocero. El contexto es real; la reunión es una recreación verosímil.</p></header>
+    <section class="card fade"><h2>Cómo funciona</h2>
+    <ul class="intro-list"><li>Son 5 situaciones. Actúas como vocero del proyecto.</li>
+    <li>Después de elegir verás si tu decisión funciona, por qué, y qué temática de clase se aplica.</li>
+    <li>Cada respuesta correcta suma 2 puntos. El máximo es 10.</li>
+    <li>Al final recibes una guía para dialogar con una comunidad sobre un proyecto difícil.</li></ul>
+    <button class="btn" id="start">Empezar</button></section>
+    <footer>Habilidades Comunicativas · Barreras de la comunicación, vicios del lenguaje, manejo de la voz y manejo del público.</footer>`;
+  document.getElementById("start").onclick=()=>{i=0;score=0;render();};
+}
+
+function render(){
+  answered=false;
+  const s=scenes[i];
+  const prog=scenes.map((_,k)=>`<span class="${k<i?'done':k===i?'now':''}"></span>`).join("");
+  app.innerHTML=`<div class="top"><div class="progress" aria-label="Situación ${i+1} de ${scenes.length}">${prog}</div><span class="score" id="score">Situación ${i+1} de ${scenes.length} · ${score} pts</span></div>
+  <section class="context fade"><span class="role">${esc(s.role)}</span><p>${esc(s.context)}</p></section>
+  <section class="scene fade"><span class="label">En la reunión</span>
+   ${s.lines.map(l=>`<div class="line"><span class="who">${esc(l.who)}</span><span class="say">${esc(l.say)}</span></div>`).join("")}
+   <p class="note">${esc(s.note)}</p></section>
+  <p class="question">${esc(s.q)}</p>
+  <div class="options">${s.opts.map((o,k)=>`<button class="opt" id="opt${i}_${k}" data-k="${k}"><span class="k">${"ABC"[k]}</span><span>${esc(o.t)}</span></button>`).join("")}</div>
+  <div id="fb"></div>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>choose(+b.dataset.k));
+}
+
+function choose(k){
+  if(answered)return; answered=true;
+  const s=scenes[i], o=s.opts[k];
+  if(o.ok)score+=2;
+  document.querySelectorAll(".opt").forEach((b,j)=>{b.disabled=true;
+    if(j===k)b.classList.add(o.ok?"ok":"bad");
+    else if(s.opts[j].ok)b.classList.add("ok");
+    else b.classList.add("dim");});
+  const right=s.opts.find(x=>x.ok);
+  document.getElementById("fb").innerHTML=`<div class="feedback ${o.ok?'ok':'bad'} fade" role="status">
+    <span class="verdict">${o.ok?"¡Buena decisión!":"Esta decisión aleja a la comunidad del diálogo."}</span>
+    <span class="tag">Temática: ${esc(o.tema)}</span>
+    <p>${esc(o.fb)}</p>
+    ${o.ok?"":`<p><b>La mejor opción:</b> ${esc(right.fb)}</p>`}
+    <button class="btn" id="next">${i<scenes.length-1?"Siguiente situación":"Ver mi resultado"}</button></div>`;
+  document.getElementById("score").textContent=`Situación ${i+1} de ${scenes.length} · ${score} pts`;
+  const n=document.getElementById("next"); n.focus();
+  n.onclick=()=>{i++; i<scenes.length?render():end();};
+}
+
+function end(){
+  const msg=score>=8?"Sabes construir confianza con una comunidad, incluso en un tema difícil.":score>=4?"Vas bien, pero algunas decisiones todavía rompen la confianza con la comunidad.":"Varias decisiones cerraron el diálogo. Repasa la guía y vuelve a intentarlo.";
+  app.innerHTML=`<section class="card fade"><p class="eyebrow">Tu resultado</p>
+  <div class="big">${score}/10</div><p>${msg}</p></section>
+  <section class="card fade"><h2>Guía para dialogar con una comunidad</h2>
+  <ol class="rules">
+   <li><b>Escucha primero:</b> pregunta qué les preocupa antes de presentar el proyecto.</li>
+   <li><b>Reconoce la historia:</b> si hubo promesas incumplidas, dilo.</li>
+   <li><b>Responde la pregunta real</b> con palabras cotidianas, no con datos técnicos.</li>
+   <li><b>No prometas lo imposible:</b> explica los riesgos y cómo se controlan.</li>
+   <li><b>Cuida el canal y la voz:</b> buen sonido, ritmo pausado y de frente al público.</li>
+   <li><b>Evita muletillas y frases vagas</b> como "las medidas pertinentes".</li>
+   <li><b>Cierra con compromisos verificables:</b> fechas, responsables y acta firmada.</li>
+  </ol></section>
+  <section class="card fade"><h2>Para reflexionar</h2>
+  <p>Si la planta se fuera a construir frente a tu casa, ¿qué necesitarías escuchar para confiar en quienes la proponen? ¿Qué te haría desconfiar de inmediato?</p>
+  <button class="btn ghost" id="again">Volver a intentarlo</button></section>`;
+  document.getElementById("again").onclick=()=>{i=0;score=0;render();};
+}
+intro();
+</script>
+
+</body>
+</html>
